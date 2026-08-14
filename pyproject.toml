@@ -4,13 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vortex-research-runner"
-version = "0.1.0"
-description = "Generic high-throughput batch research and benchmarking engine"
+version = "0.2.0"
+description = "Generic high-throughput batch research and numerical event engine"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["numpy>=2.0"]
 
 [project.scripts]
 vortex-runner-benchmark = "vortex_runner.benchmark:main"
+vortex-runner-numeric-benchmark = "vortex_runner.numeric_benchmark:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

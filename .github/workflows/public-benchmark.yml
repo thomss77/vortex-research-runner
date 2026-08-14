@@ -42,8 +42,12 @@ jobs:
       - name: Run tests
         run: python -m pytest -q
 
-      - name: Run 100k candidate benchmark
+      - name: Run 100k parallel candidate benchmark
         run: |
           python -m vortex_runner.benchmark --count 100000 --workers auto --chunk-size 512 --json benchmark.json
-          echo "--- benchmark.json ---"
           cat benchmark.json
+
+      - name: Run generic numerical kernel benchmark
+        run: |
+          python -m vortex_runner.numeric_benchmark --count 1000000 --windows 20000 --json numeric-benchmark.json
+          cat numeric-benchmark.json
