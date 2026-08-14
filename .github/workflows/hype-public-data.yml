@@ -1,0 +1,48 @@
+name: HYPEUSDT Public Data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/fetch_hype_1h.py"
+      - ".github/workflows/hype-public-data.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hype-public-data-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout public project
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Download public Binance HYPEUSDT H1 archives
+        run: python scripts/fetch_hype_1h.py
+
+      - name: Verify merged public data
+        run: |
+          wc -l data/hypeusdt_1h_2025-05-30_2026-08-03.csv
+          head -n 2 data/hypeusdt_1h_2025-05-30_2026-08-03.csv
+          tail -n 2 data/hypeusdt_1h_2025-05-30_2026-08-03.csv
+
+      - name: Upload public market data
+        uses: actions/upload-artifact@v6
+        with:
+          name: hypeusdt-h1-public-data
+          path: data/hypeusdt_1h_2025-05-30_2026-08-03.csv
+          if-no-files-found: error
+          retention-days: 1
